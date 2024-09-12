@@ -56,6 +56,8 @@ pub mod iter;
 #[cfg_attr(docsrs, doc(cfg(feature = "utils")))]
 pub mod util;
 
+use std::collections::BTreeMap;
+
 use crate::{Accessor, Buffer, Document, Material};
 
 #[cfg(feature = "utils")]
@@ -96,17 +98,7 @@ pub struct Mesh<'a> {
 }
 
 /// A single morph target for a mesh primitive.
-#[derive(Clone, Debug)]
-pub struct MorphTarget<'a> {
-    /// XYZ vertex position displacements.
-    positions: Option<Accessor<'a>>,
-
-    /// XYZ vertex normal displacements.
-    normals: Option<Accessor<'a>>,
-
-    /// XYZ vertex tangent displacements.
-    tangents: Option<Accessor<'a>>,
-}
+pub type MorphTarget<'a> = BTreeMap<Checked<Semantic>, Accessor<'a>>;
 
 /// Geometry to be rendered with the given material.
 #[derive(Clone, Debug)]
@@ -447,30 +439,5 @@ where
                     .map(ReadWeights::F32),
                 _ => unreachable!(),
             })
-    }
-
-    /// Visits the morph targets of the primitive.
-    pub fn read_morph_targets(&self) -> util::ReadMorphTargets<'a, 's, F> {
-        util::ReadMorphTargets {
-            index: 0,
-            reader: self.clone(),
-        }
-    }
-}
-
-impl<'a> MorphTarget<'a> {
-    /// Returns the XYZ vertex position displacements.
-    pub fn positions(&self) -> Option<Accessor<'a>> {
-        self.positions.clone()
-    }
-
-    /// Returns the XYZ vertex normal displacements.
-    pub fn normals(&self) -> Option<Accessor<'a>> {
-        self.normals.clone()
-    }
-
-    /// Returns the XYZ vertex tangent displacements.
-    pub fn tangents(&self) -> Option<Accessor<'a>> {
-        self.tangents.clone()
     }
 }

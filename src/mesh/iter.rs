@@ -88,23 +88,14 @@ fn map_morph_target<'a>(
     document: &'a crate::Document,
     json: &json::mesh::MorphTarget,
 ) -> MorphTarget<'a> {
-    let positions = json
-        .positions
-        .as_ref()
-        .map(|index| document.accessors().nth(index.value()).unwrap());
-    let normals = json
-        .normals
-        .as_ref()
-        .map(|index| document.accessors().nth(index.value()).unwrap());
-    let tangents = json
-        .tangents
-        .as_ref()
-        .map(|index| document.accessors().nth(index.value()).unwrap());
-    MorphTarget {
-        positions,
-        normals,
-        tangents,
-    }
+    json.iter()
+        .map(|(key, value)| {
+            (
+                key.clone(),
+                document.accessors().nth(value.value()).unwrap(),
+            )
+        })
+        .collect()
 }
 
 impl<'a> ExactSizeIterator for MorphTargets<'a> {}

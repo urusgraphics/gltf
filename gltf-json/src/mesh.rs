@@ -127,8 +127,7 @@ pub struct Primitive {
     pub mode: Checked<Mode>,
 
     /// An array of Morph Targets, each  Morph Target is a dictionary mapping
-    /// attributes (only `POSITION`, `NORMAL`, and `TANGENT` supported) to their
-    /// deviations in the Morph Target.
+    /// attributes to their deviations in the Morph Target.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub targets: Option<Vec<MorphTarget>>,
 }
@@ -173,23 +172,7 @@ where
 }
 
 /// A dictionary mapping attributes to their deviations in the Morph Target.
-#[derive(Clone, Debug, Deserialize, Serialize, Validate)]
-pub struct MorphTarget {
-    /// XYZ vertex position displacements of type `[f32; 3]`.
-    #[serde(rename = "POSITION")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub positions: Option<Index<accessor::Accessor>>,
-
-    /// XYZ vertex normal displacements of type `[f32; 3]`.
-    #[serde(rename = "NORMAL")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub normals: Option<Index<accessor::Accessor>>,
-
-    /// XYZ vertex tangent displacements of type `[f32; 3]`.
-    #[serde(rename = "TANGENT")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tangents: Option<Index<accessor::Accessor>>,
-}
+pub type MorphTarget = BTreeMap<Checked<Semantic>, Index<accessor::Accessor>>;
 
 /// Vertex attribute semantic name.
 #[derive(Clone, Debug, Eq, Hash, PartialEq, Ord, PartialOrd)]
